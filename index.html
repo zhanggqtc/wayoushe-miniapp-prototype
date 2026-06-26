@@ -1,0 +1,1032 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>高校瓦友社小程序 H5 交互稿</title>
+  <style>
+    :root {
+      --bg: #080d12;
+      --panel: #101923;
+      --panel-2: #16212d;
+      --line: rgba(255,255,255,.10);
+      --line-2: rgba(255,255,255,.18);
+      --text: #f4f7fb;
+      --muted: #8d9aaa;
+      --red: #ff4655;
+      --red-2: #db3544;
+      --cyan: #75f4ff;
+      --green: #57e39b;
+      --amber: #ffcc66;
+      --radius: 22px;
+      --shadow: 0 24px 70px rgba(0,0,0,.42);
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255,70,85,.22), transparent 26%),
+        radial-gradient(circle at 82% 20%, rgba(117,244,255,.12), transparent 28%),
+        linear-gradient(135deg, #070b10, #111b26 48%, #070b10);
+      overflow-x: hidden;
+    }
+
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    .page {
+      min-height: 100dvh;
+      display: grid;
+      grid-template-columns: minmax(320px, 420px) minmax(360px, 560px);
+      gap: 42px;
+      align-items: center;
+      justify-content: center;
+      padding: 36px;
+    }
+
+    .brief {
+      max-width: 520px;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #c8d3df;
+      background: rgba(255,255,255,.05);
+      backdrop-filter: blur(16px);
+      font-size: 13px;
+    }
+    .mark {
+      width: 10px;
+      height: 10px;
+      background: var(--red);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+    }
+    h1 {
+      margin: 22px 0 14px;
+      font-size: clamp(38px, 5vw, 66px);
+      line-height: .96;
+      letter-spacing: -0.055em;
+    }
+    .brief p {
+      margin: 0;
+      color: #aeb8c5;
+      font-size: 17px;
+      line-height: 1.72;
+      max-width: 31em;
+    }
+    .brief-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 26px;
+    }
+    .pill-button {
+      height: 44px;
+      padding: 0 18px;
+      border-radius: 999px;
+      color: #071016;
+      background: var(--text);
+      font-weight: 700;
+    }
+    .pill-button.secondary {
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      border: 1px solid var(--line-2);
+    }
+    .notes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 34px;
+    }
+    .note {
+      min-height: 108px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255,255,255,.045);
+    }
+    .note strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+    .note span {
+      display: block;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .phone-shell {
+      width: min(390px, calc(100vw - 32px));
+      height: min(844px, calc(100dvh - 32px));
+      min-height: 720px;
+      border-radius: 42px;
+      padding: 12px;
+      background: linear-gradient(145deg, rgba(255,255,255,.22), rgba(255,255,255,.05));
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,.35);
+      position: relative;
+    }
+    .phone {
+      height: 100%;
+      overflow: hidden;
+      border-radius: 32px;
+      background:
+        linear-gradient(180deg, rgba(255,70,85,.14), transparent 24%),
+        var(--bg);
+      border: 1px solid rgba(255,255,255,.08);
+      position: relative;
+    }
+    .phone::before {
+      content: "";
+      position: absolute;
+      top: 8px;
+      left: 50%;
+      width: 116px;
+      height: 26px;
+      border-radius: 999px;
+      transform: translateX(-50%);
+      background: #06090d;
+      z-index: 10;
+    }
+    .statusbar {
+      height: 38px;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding: 0 24px 7px;
+      color: rgba(255,255,255,.76);
+      font-size: 12px;
+      letter-spacing: .02em;
+      position: relative;
+      z-index: 12;
+    }
+    .app {
+      height: calc(100% - 38px);
+      display: flex;
+      flex-direction: column;
+    }
+    .screen {
+      flex: 1;
+      overflow-y: auto;
+      scrollbar-width: none;
+      padding: 18px 16px 92px;
+    }
+    .screen::-webkit-scrollbar { display: none; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+    }
+    .school-name {
+      font-size: 25px;
+      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.05em;
+    }
+    .school-meta {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 15px;
+      background: linear-gradient(135deg, var(--red), #5c1520);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.28);
+    }
+    .campus-card {
+      margin-bottom: 16px;
+      border-radius: 27px;
+      padding: 16px;
+      background:
+        radial-gradient(circle at 82% 0%, rgba(255,204,102,.16), transparent 34%),
+        linear-gradient(145deg, rgba(255,255,255,.105), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.11);
+      box-shadow: 0 16px 36px rgba(0,0,0,.22);
+    }
+    .campus-main {
+      display: flex;
+      justify-content: space-between;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .campus-title {
+      font-size: 24px;
+      line-height: 1.05;
+      font-weight: 950;
+      letter-spacing: -0.055em;
+    }
+    .campus-verify {
+      margin-top: 6px;
+      color: #b9c5d2;
+      font-size: 12px;
+    }
+    .level-badge {
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #071016;
+      background: linear-gradient(135deg, #b9f7ff, #6aa9ff);
+      font-weight: 950;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .campus-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .campus-stat {
+      padding: 11px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .campus-stat b {
+      display: block;
+      font-size: 18px;
+      letter-spacing: -0.04em;
+    }
+    .campus-stat span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .pioneer-line {
+      margin-top: 10px;
+      padding: 10px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-radius: 16px;
+      background: rgba(255,70,85,.10);
+      border: 1px solid rgba(255,70,85,.18);
+    }
+    .pioneer-line strong { font-size: 12px; }
+    .pioneer-line span { color: #b9c5d2; font-size: 11px; }
+    .hero-card {
+      border-radius: 28px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(117,244,255,.18), transparent 32%),
+        linear-gradient(145deg, rgba(255,70,85,.2), rgba(255,255,255,.06) 42%, rgba(255,255,255,.035));
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 18px 40px rgba(0,0,0,.24);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      inset: auto -18px -60px auto;
+      width: 150px;
+      height: 150px;
+      background: rgba(255,70,85,.24);
+      filter: blur(34px);
+      border-radius: 999px;
+    }
+    .module-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .module-title {
+      margin: 0;
+      font-size: 19px;
+      letter-spacing: -0.03em;
+    }
+    .module-sub {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag {
+      flex: 0 0 auto;
+      padding: 6px 9px;
+      border-radius: 999px;
+      color: #071016;
+      background: var(--cyan);
+      font-weight: 800;
+      font-size: 11px;
+    }
+    .skins {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      position: relative;
+      z-index: 1;
+    }
+    .skin-card {
+      min-height: 118px;
+      border-radius: 18px;
+      padding: 10px;
+      color: var(--text);
+      text-align: left;
+      background: linear-gradient(160deg, rgba(255,255,255,.16), rgba(255,255,255,.045));
+      border: 1px solid rgba(255,255,255,.12);
+      transition: transform .22s ease, border-color .22s ease, background .22s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .skin-card:active { transform: scale(.98); }
+    .skin-card.active {
+      border-color: rgba(255,70,85,.8);
+      background: linear-gradient(160deg, rgba(255,70,85,.24), rgba(255,255,255,.06));
+    }
+    .weapon-art {
+      height: 48px;
+      margin: 8px 0 14px;
+      position: relative;
+    }
+    .weapon-art::before {
+      content: "";
+      position: absolute;
+      left: 4px;
+      top: 18px;
+      width: 68px;
+      height: 13px;
+      border-radius: 2px;
+      transform: skewX(-18deg);
+      background: linear-gradient(90deg, #e8edf4, #647081);
+      box-shadow: 24px -10px 0 -3px rgba(255,70,85,.9), 46px 10px 0 -5px rgba(117,244,255,.85);
+    }
+    .skin-name {
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .skin-type {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10px;
+    }
+    .candidate-tag {
+      position: absolute;
+      left: 8px;
+      top: 8px;
+      padding: 4px 6px;
+      border-radius: 999px;
+      background: rgba(0,0,0,.36);
+      color: #dbe6f2;
+      font-size: 9px;
+      font-weight: 850;
+    }
+    .skin-card.active .candidate-tag {
+      color: #071016;
+      background: var(--amber);
+    }
+    .rule-copy {
+      margin-top: 10px;
+      color: #c5d0dc;
+      font-size: 11px;
+      line-height: 1.45;
+      position: relative;
+      z-index: 1;
+    }
+    .slots {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .slot-card {
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .slot-card.pending {
+      border-color: rgba(255,204,102,.36);
+      background: linear-gradient(145deg, rgba(255,204,102,.12), rgba(0,0,0,.22));
+    }
+    .slot-card.locked {
+      border-color: rgba(87,227,155,.34);
+      background: linear-gradient(145deg, rgba(87,227,155,.12), rgba(0,0,0,.22));
+    }
+    .slot-card.empty {
+      border-style: dashed;
+      opacity: .92;
+    }
+    .slot-top {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      gap: 9px;
+      align-items: start;
+    }
+    .task-line {
+      margin-top: 9px;
+      color: #c7d2de;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+    .task-progress {
+      margin-top: 8px;
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.11);
+      overflow: hidden;
+    }
+    .task-progress span {
+      display: block;
+      height: 100%;
+      width: 60%;
+      border-radius: inherit;
+      background: var(--amber);
+    }
+    .slot-row {
+      display: grid;
+      grid-template-columns: 24px 1fr auto;
+      align-items: center;
+      gap: 9px;
+      min-height: 44px;
+      padding: 8px 10px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.20);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .slot-index {
+      width: 24px;
+      height: 24px;
+      border-radius: 9px;
+      display: grid;
+      place-items: center;
+      background: rgba(255,255,255,.10);
+      font-size: 11px;
+      font-weight: 800;
+    }
+    .slot-title { font-size: 12px; font-weight: 800; }
+    .slot-desc { margin-top: 2px; color: var(--muted); font-size: 10px; }
+    .mini-status {
+      padding: 5px 8px;
+      border-radius: 999px;
+      color: #071016;
+      background: var(--green);
+      font-size: 10px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .mini-status.pending { color: var(--text); background: rgba(255,255,255,.11); }
+    .cta-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+      position: relative;
+      z-index: 1;
+    }
+    .cta {
+      height: 42px;
+      border-radius: 15px;
+      color: #071016;
+      background: var(--red);
+      font-weight: 900;
+      box-shadow: 0 10px 24px rgba(255,70,85,.22);
+    }
+    .cta.ghost {
+      color: var(--text);
+      background: rgba(255,255,255,.08);
+      box-shadow: none;
+      border: 1px solid rgba(255,255,255,.13);
+    }
+    .section {
+      margin-top: 18px;
+      border-radius: var(--radius);
+      padding: 16px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .section-title { font-size: 17px; font-weight: 900; letter-spacing: -0.03em; }
+    .link { color: #c4d1df; font-size: 12px; background: transparent; padding: 0; }
+    .radar-list { display: grid; gap: 10px; }
+    .activity {
+      display: grid;
+      grid-template-columns: 48px 1fr auto;
+      gap: 11px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.20);
+    }
+    .date-block {
+      width: 48px;
+      height: 48px;
+      border-radius: 15px;
+      background: rgba(255,70,85,.16);
+      border: 1px solid rgba(255,70,85,.26);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      line-height: 1.05;
+      color: #ffd5d9;
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .activity-name { font-size: 13px; font-weight: 850; }
+    .activity-meta { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .state-chip {
+      padding: 6px 8px;
+      border-radius: 999px;
+      color: #071016;
+      background: var(--amber);
+      font-weight: 900;
+      font-size: 10px;
+      white-space: nowrap;
+    }
+    .campus-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .metric {
+      padding: 14px;
+      min-height: 82px;
+      border-radius: 17px;
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .metric b { display: block; font-size: 22px; letter-spacing: -0.04em; }
+    .metric span { display: block; margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .points-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 15px;
+      border-radius: 20px;
+      background:
+        radial-gradient(circle at 88% 12%, rgba(255,204,102,.2), transparent 34%),
+        rgba(255,255,255,.055);
+      border: 1px solid rgba(255,204,102,.18);
+    }
+    .points-card b {
+      display: block;
+      font-size: 26px;
+      letter-spacing: -0.05em;
+    }
+    .points-card span {
+      display: block;
+      margin-top: 4px;
+      color: #b9c5d2;
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .mall-button {
+      height: 36px;
+      padding: 0 12px;
+      border-radius: 13px;
+      background: var(--amber);
+      color: #071016;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+    .buddy-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .buddy-card {
+      min-height: 98px;
+      border-radius: 17px;
+      padding: 10px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .face {
+      width: 34px;
+      height: 34px;
+      border-radius: 13px;
+      background: linear-gradient(135deg, #ccd6e4, #38485b);
+      margin-bottom: 9px;
+    }
+    .buddy-card strong { display: block; font-size: 12px; }
+    .buddy-card span { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.3; }
+
+    .tabbar {
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      z-index: 20;
+      height: 74px;
+      border-radius: 26px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 4px;
+      padding: 8px;
+      background: rgba(9,14,20,.88);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .tab {
+      border-radius: 19px;
+      color: #788696;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      gap: 3px;
+      font-size: 11px;
+      transition: background .2s ease, color .2s ease, transform .2s ease;
+    }
+    .tab:active { transform: scale(.97); }
+    .tab.active {
+      color: var(--text);
+      background: rgba(255,255,255,.09);
+    }
+    .tab i {
+      width: 20px;
+      height: 20px;
+      border-radius: 8px;
+      background: currentColor;
+      opacity: .9;
+      clip-path: polygon(18% 18%, 82% 18%, 82% 82%, 18% 82%);
+    }
+    .tab:nth-child(1) i { clip-path: polygon(50% 6%, 90% 42%, 78% 92%, 22% 92%, 10% 42%); }
+    .tab:nth-child(2) i { clip-path: polygon(14% 24%, 86% 24%, 86% 76%, 14% 76%); }
+    .tab:nth-child(3) i { clip-path: circle(44%); }
+    .tab:nth-child(4) i { clip-path: polygon(50% 12%, 78% 32%, 72% 84%, 28% 84%, 22% 32%); }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      bottom: 104px;
+      transform: translate(-50%, 20px);
+      opacity: 0;
+      pointer-events: none;
+      padding: 10px 13px;
+      border-radius: 999px;
+      color: #071016;
+      background: var(--text);
+      font-weight: 850;
+      font-size: 12px;
+      transition: opacity .22s ease, transform .22s ease;
+      z-index: 30;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .empty-screen {
+      min-height: 560px;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+    .large-card {
+      border-radius: 26px;
+      padding: 18px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .large-card h2 {
+      margin: 0 0 8px;
+      font-size: 23px;
+      letter-spacing: -0.04em;
+    }
+    .large-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .template-list { display: grid; gap: 10px; margin-top: 14px; }
+    .template-item {
+      padding: 12px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .template-item strong { display: block; font-size: 13px; }
+    .template-item span { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; }
+    .profile-head {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .profile-avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 22px;
+      background: linear-gradient(135deg, var(--red), #172432);
+      display: grid;
+      place-items: center;
+      font-size: 22px;
+      font-weight: 900;
+    }
+    .profile-head h2 { margin: 0 0 5px; font-size: 22px; }
+    .profile-head p { margin: 0; color: var(--muted); font-size: 12px; }
+    .progress-line {
+      margin-top: 12px;
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.11);
+      overflow: hidden;
+    }
+    .progress-line span {
+      display: block;
+      width: 62%;
+      height: 100%;
+      background: var(--red);
+      border-radius: inherit;
+    }
+
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; padding: 16px; gap: 18px; }
+      .brief { display: none; }
+      .phone-shell { margin: 0 auto; height: calc(100dvh - 32px); }
+    }
+
+    @media (prefers-reduced-motion: no-preference) {
+      .hero-card { animation: settle .55s cubic-bezier(.16, 1, .3, 1) both; }
+      .section { animation: fade-up .55s cubic-bezier(.16, 1, .3, 1) both; }
+      .section:nth-of-type(2) { animation-delay: .06s; }
+      .section:nth-of-type(3) { animation-delay: .12s; }
+      @keyframes settle { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+      @keyframes fade-up { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <aside class="brief">
+      <div class="kicker"><span class="mark"></span> 高校瓦友社小程序 · H5 交互稿</div>
+      <h1>首页靠权益、活动和同校存在感留住玩家。</h1>
+      <p>这版把第一个 Tab 设计成“我的高校瓦友社今日面板”。核心不是资讯流，而是每日皮肤自选、活动雷达、同校动态和同好雷达的组合。</p>
+      <div class="brief-actions">
+        <button class="pill-button" onclick="setTab('home')">看首页</button>
+        <button class="pill-button secondary" onclick="setTab('activity')">看活动链路</button>
+        <button class="pill-button secondary" onclick="setTab('buddy')">看同好雷达</button>
+      </div>
+      <div class="notes">
+        <div class="note"><strong>第一屏吸引力</strong><span>今日 3 款随机皮肤直接露出，下月 3 个槽位紧跟，玩家能一眼看到收益和进度。</span></div>
+        <div class="note"><strong>先锋不占导航</strong><span>创建比赛、AI 海报、报名管理放在活动页右上角和我的工具箱里，仅先锋可见。</span></div>
+        <div class="note"><strong>轻社交</strong><span>同好雷达每天 3 人，展示标签和段位区间，游戏名片需双向确认后可见。</span></div>
+        <div class="note"><strong>内容区策略</strong><span>资讯先不硬填，用活动雷达、同校动态、常用入口填满每日可消费空间。</span></div>
+      </div>
+    </aside>
+
+    <section class="phone-shell" aria-label="小程序交互预览">
+      <div class="phone">
+        <div class="statusbar"><span>15:46</span><span>5G 100%</span></div>
+        <div class="app">
+          <div class="screen" id="screen"></div>
+          <nav class="tabbar" aria-label="底部导航">
+            <button class="tab active" data-tab="home"><i></i><span>瓦友社</span></button>
+            <button class="tab" data-tab="activity"><i></i><span>活动</span></button>
+            <button class="tab" data-tab="buddy"><i></i><span>同好</span></button>
+            <button class="tab" data-tab="mine"><i></i><span>我的</span></button>
+          </nav>
+        </div>
+        <div class="toast" id="toast">已选择今日皮肤</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const screen = document.getElementById('screen');
+    const toast = document.getElementById('toast');
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+
+    const skins = [
+      ['离子幻象', '步枪皮肤'],
+      ['盖亚复仇', '暴徒皮肤'],
+      ['侦查行动', '冥驹皮肤']
+    ];
+
+    function showToast(text) {
+      toast.textContent = text;
+      toast.classList.add('show');
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    function home() {
+      screen.innerHTML = `
+        <section class="campus-card">
+          <div class="campus-main">
+            <div>
+              <div class="campus-title">深圳大学瓦友社</div>
+              <div class="campus-verify">高校特权已认证 · 今日面板已更新</div>
+            </div>
+            <span class="level-badge">钻石瓦友社</span>
+          </div>
+          <div class="campus-stats">
+            <div class="campus-stat"><b>12,846</b><span>本校瓦友社人数</span></div>
+            <div class="campus-stat"><b>钻石</b><span>白银 / 黄金 / 钻石 / 神话 / 荣誉</span></div>
+          </div>
+          <div class="pioneer-line">
+            <div><strong>本校先锋：陈同学</strong><span> · 负责活动与比赛组织</span></div>
+            <button class="link" onclick="showToast('查看先锋计划')">了解</button>
+          </div>
+        </section>
+
+        <section class="hero-card">
+          <div class="module-head">
+            <div>
+              <h2 class="module-title">今日可选皮肤</h2>
+              <div class="module-sub">今日固定 3 款，加入槽位后需完成任务才会锁定</div>
+            </div>
+            <span class="tag">不可重抽</span>
+          </div>
+          <div class="skins">
+            ${skins.map((s, i) => `
+              <button class="skin-card ${i === 1 ? 'active' : ''}" onclick="selectSkin('${s[0]}')">
+                <span class="candidate-tag">${i === 1 ? '已占位' : '可加入'}</span>
+                <div class="weapon-art"></div>
+                <div class="skin-name">${s[0]}</div>
+                <div class="skin-type">${s[1]}</div>
+              </button>
+            `).join('')}
+          </div>
+          <div class="rule-copy">选择不是获得。皮肤先进入下月自选槽，完成对应任务后才会锁定，未锁定槽位月底由默认轮换皮肤补位。</div>
+          <div class="slots">
+            <div class="slot-card pending">
+              <div class="slot-top">
+                <div class="slot-index">1</div><div><div class="slot-title">盖亚复仇</div><div class="slot-desc">已占位，待锁定</div></div><span class="mini-status pending">还差 2 场</span>
+              </div>
+              <div class="task-line">任务：本周完成 5 场对局 · 当前 3/5，完成后下月生效</div>
+              <div class="task-progress"><span></span></div>
+            </div>
+            <div class="slot-card locked">
+              <div class="slot-top">
+                <div class="slot-index">2</div><div><div class="slot-title">离子幻象</div><div class="slot-desc">已锁定，下月高校特权生效</div></div><span class="mini-status">已锁定</span>
+              </div>
+              <div class="task-line">任务已完成，月底结算时不会被默认皮肤替换。</div>
+            </div>
+            <div class="slot-card empty">
+              <div class="slot-top">
+                <div class="slot-index">3</div><div><div class="slot-title">未选择皮肤</div><div class="slot-desc">空槽将由默认轮换皮肤补位</div></div><span class="mini-status pending">空槽</span>
+              </div>
+              <div class="task-line">如果今天没有想要的皮肤，可以保留默认月度轮换。</div>
+            </div>
+          </div>
+          <div class="cta-row">
+            <button class="cta" onclick="showToast('进入任务进度')">看任务</button>
+            <button class="cta ghost" onclick="showToast('查看默认轮换')">默认轮换</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="points-card">
+            <div><b>1,280 积分</b><span>只来自活动参与和先锋组织，日常登录与皮肤任务不发放积分。</span></div>
+            <button class="mall-button" onclick="showToast('跳转积分商城')">去兑换</button>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><div class="section-title">活动雷达</div><button class="link" onclick="setTab('activity')">全部</button></div>
+          <div class="radar-list">
+            <div class="activity"><div class="date-block">06<br>28</div><div><div class="activity-name">深大周末校内对抗赛</div><div class="activity-meta">报名剩 18 小时 · 完赛 +100 积分</div></div><span class="state-chip">报名中</span></div>
+            <div class="activity"><div class="date-block">07<br>03</div><div><div class="activity-name">南山网吧高校夜赛</div><div class="activity-meta">距你 2.4km · 签到 +40 积分</div></div><span class="state-chip">预热</span></div>
+          </div>
+        </section>
+
+        <section class="section">
+          <div class="section-head"><div class="section-title">同校动态</div><button class="link" onclick="setTab('buddy')">雷达</button></div>
+          <div class="campus-grid">
+            <div class="metric"><b>128</b><span>今日活跃瓦友</span></div>
+            <div class="metric"><b>36</b><span>正在冲自选皮肤</span></div>
+            <div class="metric"><b>4</b><span>开放报名活动</span></div>
+            <div class="metric"><b>3</b><span>今日同好推荐</span></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function activity() {
+      screen.innerHTML = `
+        <div class="topbar">
+          <div><div class="school-name">活动</div><div class="school-meta">官方活动 · 本校比赛 · 附近网吧</div></div>
+          <button class="cta" style="width:72px;height:38px;border-radius:14px" onclick="showToast('先锋身份可创建')">创建</button>
+        </div>
+        <section class="large-card">
+          <h2>比赛组织链路</h2>
+          <p>玩家看到报名、签到、赛程、结果和可获得积分。积分只投放在真实活动里，商城兑换跳转到现有系统。</p>
+          <div class="template-list">
+            <div class="template-item"><strong>深大周末校内对抗赛</strong><span>报名中 · 完赛 +100 积分 · 冠军额外 +500</span></div>
+            <div class="template-item"><strong>华南片区高校挑战赛</strong><span>待审核 · 官方核心活动 · 审核通过后展示积分</span></div>
+            <div class="template-item"><strong>南山网吧高校夜赛</strong><span>预热中 · 签到 +40 积分 · 线下活动</span></div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">先锋工具箱</div><span class="link">身份解锁</span></div>
+          <div class="radar-list">
+            <div class="activity"><div class="date-block">审<br>核</div><div><div class="activity-name">模板创建后提交官方审核</div><div class="activity-meta">核心活动和比赛必须审核，通过后才发布</div></div><span class="state-chip">必经</span></div>
+            <div class="activity"><div class="date-block">组<br>织</div><div><div class="activity-name">成功组织活动可获得积分</div><div class="activity-meta">按实际签到、完赛和活动质量结算</div></div><span class="state-chip">结算</span></div>
+            <div class="activity"><div class="date-block">AI<br>图</div><div><div class="activity-name">生成比赛宣传海报</div><div class="activity-meta">自动带入比赛信息和报名入口</div></div><span class="state-chip">生成</span></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function buddy() {
+      screen.innerHTML = `
+        <div class="topbar">
+          <div><div class="school-name">同好雷达</div><div class="school-meta">今日推荐 3 位同校瓦友</div></div>
+          <div class="avatar">3</div>
+        </div>
+        <section class="large-card">
+          <h2>不是找陌生队友，是发现同校同好</h2>
+          <p>画像由游戏数据生成，默认展示头像昵称、段位区间和标签，游戏名片需双向确认后可见。</p>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">今日推荐</div><button class="link" onclick="showToast('明天更新下一批')">规则</button></div>
+          <div class="buddy-strip">
+            <button class="buddy-card" onclick="showToast('已发送预设招呼')"><div class="face"></div><strong>北门烟位</strong><span>铂金段位 · 夜间活跃</span></button>
+            <button class="buddy-card" onclick="showToast('已收藏')"><div class="face"></div><strong>练枪狂热</strong><span>步枪手 · 排位党</span></button>
+            <button class="buddy-card" onclick="showToast('等待对方确认')"><div class="face"></div><strong>周末赛党</strong><span>常参加活动</span></button>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">低风险互动</div><span class="link">中隐私</span></div>
+          <div class="radar-list">
+            <div class="slot-row"><div class="slot-index">1</div><div><div class="slot-title">点赞或收藏</div><div class="slot-desc">单向兴趣表达，不直接打扰</div></div><span class="mini-status pending">轻互动</span></div>
+            <div class="slot-row"><div class="slot-index">2</div><div><div class="slot-title">预设打招呼</div><div class="slot-desc">降低骚扰和尴尬成本</div></div><span class="mini-status pending">可控</span></div>
+            <div class="slot-row"><div class="slot-index">3</div><div><div class="slot-title">双向确认后交换名片</div><div class="slot-desc">游戏 ID 和区服不默认展示</div></div><span class="mini-status">安全</span></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function mine() {
+      screen.innerHTML = `
+        <div class="topbar">
+          <div><div class="school-name">我的</div><div class="school-meta">身份 · 权益 · 记录 · 设置</div></div>
+        </div>
+        <section class="large-card">
+          <div class="profile-head">
+            <div class="profile-avatar">V</div>
+            <div><h2>深大认证瓦友</h2><p>高校特权已认证 · 本校先锋：陈同学</p></div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="points-card">
+            <div><b>1,280 积分</b><span>活动签到、完赛和先锋组织后获得。兑换由现有商城系统承接。</span></div>
+            <button class="mall-button" onclick="showToast('跳转积分商城')">商城</button>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">下月皮肤权益</div><span class="link">2/3</span></div>
+          <div class="slot-row"><div class="slot-index">1</div><div><div class="slot-title">离子幻象</div><div class="slot-desc">已锁定</div></div><span class="mini-status">生效</span></div>
+          <div class="slot-row" style="margin-top:8px"><div class="slot-index">2</div><div><div class="slot-title">盖亚复仇</div><div class="slot-desc">本周对局任务进度</div><div class="progress-line"><span></span></div></div><span class="mini-status pending">任务中</span></div>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">我的记录</div><span class="link">全部</span></div>
+          <div class="template-list">
+            <div class="template-item"><strong>我的报名</strong><span>1 个比赛待签到，2 个活动已结束</span></div>
+            <div class="template-item"><strong>社交记录</strong><span>3 个收藏，1 个名片交换待确认</span></div>
+            <div class="template-item"><strong>先锋工具箱</strong><span>仅高校先锋展示创建和管理入口</span></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function setTab(name) {
+      tabs.forEach(tab => tab.classList.toggle('active', tab.dataset.tab === name));
+      if (name === 'home') home();
+      if (name === 'activity') activity();
+      if (name === 'buddy') buddy();
+      if (name === 'mine') mine();
+    }
+
+    function selectSkin(name) {
+      document.querySelectorAll('.skin-card').forEach(card => card.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      showToast('已选择：' + name);
+    }
+
+    tabs.forEach(tab => tab.addEventListener('click', () => setTab(tab.dataset.tab)));
+    home();
+  </script>
+</body>
+</html>
