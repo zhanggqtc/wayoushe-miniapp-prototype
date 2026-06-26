@@ -608,6 +608,96 @@
       font-weight: 950;
       white-space: nowrap;
     }
+    .mall-hero {
+      border-radius: 26px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 80% 18%, rgba(255,204,102,.24), transparent 34%),
+        linear-gradient(145deg, rgba(255,255,255,.11), rgba(255,255,255,.04));
+      border: 1px solid rgba(255,204,102,.2);
+    }
+    .mall-hero h2 {
+      margin: 0;
+      font-size: 26px;
+      letter-spacing: -0.05em;
+    }
+    .mall-hero p {
+      margin: 8px 0 0;
+      color: #b9c5d2;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .mall-filter {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .mall-filter::-webkit-scrollbar { display: none; }
+    .mall-filter span {
+      flex: 0 0 auto;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: #d8e2ee;
+      background: rgba(255,255,255,.08);
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .mall-filter span:first-child {
+      color: #071016;
+      background: var(--amber);
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .product-card {
+      padding: 10px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.09);
+      text-align: left;
+      color: var(--text);
+    }
+    .product-art {
+      height: 78px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      background:
+        radial-gradient(circle at 64% 24%, rgba(255,204,102,.35), transparent 32%),
+        linear-gradient(135deg, rgba(255,70,85,.22), rgba(117,244,255,.12));
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .product-card strong { display: block; font-size: 12px; line-height: 1.25; }
+    .product-card small { display: block; margin-top: 4px; color: var(--muted); font-size: 10px; }
+    .product-price {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .product-price b { font-size: 14px; color: var(--amber); }
+    .exchange-button {
+      height: 28px;
+      padding: 0 9px;
+      border-radius: 10px;
+      color: #071016;
+      background: var(--text);
+      font-size: 11px;
+      font-weight: 950;
+      white-space: nowrap;
+    }
+    .confirm-card {
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255,204,102,.1);
+      border: 1px solid rgba(255,204,102,.2);
+    }
+    .confirm-card strong { display: block; font-size: 14px; }
+    .confirm-card span { display: block; margin-top: 6px; color: #c7d2de; font-size: 11px; line-height: 1.45; }
     .buddy-strip {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -898,8 +988,8 @@
 
         <section class="section">
           <div class="points-card">
-            <div><b>1,280 积分</b><span>只来自活动参与和先锋组织，日常登录与皮肤任务不发放积分。</span></div>
-            <button class="mall-button" onclick="showToast('跳转积分商城')">去兑换</button>
+            <div><b>1,280 积分</b><span>只来自活动参与和先锋组织，先在小程序内选商品，确认后跳转周边商城承接。</span></div>
+            <button class="mall-button" onclick="mall()">去兑换</button>
           </div>
         </section>
 
@@ -931,7 +1021,7 @@
         </div>
         <section class="large-card">
           <h2>比赛组织链路</h2>
-          <p>玩家看到报名、签到、赛程、结果和可获得积分。积分只投放在真实活动里，商城兑换跳转到现有系统。</p>
+          <p>玩家看到报名、签到、赛程、结果和可获得积分。积分只投放在真实活动里，商城先在小程序内展示商品。</p>
           <div class="template-list">
             <div class="template-item"><strong>深大周末校内对抗赛</strong><span>报名中 · 完赛 +100 积分 · 冠军额外 +500</span></div>
             <div class="template-item"><strong>华南片区高校挑战赛</strong><span>待审核 · 官方核心活动 · 审核通过后展示积分</span></div>
@@ -944,6 +1034,35 @@
             <div class="activity"><div class="date-block">审<br>核</div><div><div class="activity-name">模板创建后提交官方审核</div><div class="activity-meta">核心活动和比赛必须审核，通过后才发布</div></div><span class="state-chip">必经</span></div>
             <div class="activity"><div class="date-block">组<br>织</div><div><div class="activity-name">成功组织活动可获得积分</div><div class="activity-meta">按实际签到、完赛和活动质量结算</div></div><span class="state-chip">结算</span></div>
             <div class="activity"><div class="date-block">AI<br>图</div><div><div class="activity-name">生成比赛宣传海报</div><div class="activity-meta">自动带入比赛信息和报名入口</div></div><span class="state-chip">生成</span></div>
+          </div>
+        </section>
+      `;
+    }
+
+    function mall() {
+      screen.innerHTML = `
+        <div class="topbar">
+          <div><div class="school-name">积分商城</div><div class="school-meta">小程序内选商品 · 兑换后跳转周边商城</div></div>
+          <button class="link" onclick="setTab('home')">返回</button>
+        </div>
+        <section class="mall-hero">
+          <h2>1,280 积分</h2>
+          <p>积分只来自活动参与和先锋组织。这里完成商品浏览与兑换确认，后续地址、订单、发货由周边商城承接。</p>
+          <div class="mall-filter"><span>推荐兑换</span><span>限定周边</span><span>赛事奖励</span><span>校园物料</span></div>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">推荐兑换</div><span class="link">库存实时同步</span></div>
+          <div class="product-grid">
+            <button class="product-card" onclick="showToast('确认后跳转周边商城')"><div class="product-art"></div><strong>瓦友社限定徽章</strong><small>剩余 86 · 每人限兑 1 件</small><div class="product-price"><b>600 积分</b><span class="exchange-button">兑换</span></div></button>
+            <button class="product-card" onclick="showToast('确认后跳转周边商城')"><div class="product-art"></div><strong>高校赛鼠标垫</strong><small>剩余 24 · 需认证高校特权</small><div class="product-price"><b>1,200 积分</b><span class="exchange-button">兑换</span></div></button>
+            <button class="product-card" onclick="showToast('积分不足或库存不足时置灰')"><div class="product-art"></div><strong>无畏契约贴纸包</strong><small>剩余 210 · 活动参与推荐</small><div class="product-price"><b>300 积分</b><span class="exchange-button">兑换</span></div></button>
+            <button class="product-card" onclick="showToast('进入商品详情')"><div class="product-art"></div><strong>线下赛应援包</strong><small>剩余 12 · 先锋活动物料</small><div class="product-price"><b>2,000 积分</b><span class="exchange-button">详情</span></div></button>
+          </div>
+        </section>
+        <section class="section">
+          <div class="confirm-card">
+            <strong>兑换链路说明</strong>
+            <span>小程序内负责商品展示、积分价格、库存、限兑和兑换确认。用户确认兑换后，再跳转到周边商城完成地址、订单、物流和售后。</span>
           </div>
         </section>
       `;
@@ -991,8 +1110,8 @@
         </section>
         <section class="section">
           <div class="points-card">
-            <div><b>1,280 积分</b><span>活动签到、完赛和先锋组织后获得。兑换由现有商城系统承接。</span></div>
-            <button class="mall-button" onclick="showToast('跳转积分商城')">商城</button>
+            <div><b>1,280 积分</b><span>活动签到、完赛和先锋组织后获得。小程序内选商品，确认兑换后跳转承接。</span></div>
+            <button class="mall-button" onclick="mall()">商城</button>
           </div>
         </section>
         <section class="section">
