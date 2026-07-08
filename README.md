@@ -18,6 +18,8 @@ https://zhanggqtc.github.io/wayoushe-miniapp-prototype/
 ## 当前产品范围
 
 - 高校瓦友社首页。
+- 本校 QQ/微信群聊入口。
+- 本校先锋成就记录展开。
 - 高校特权皮肤随机与下月自选槽。
 - 活动与比赛中心。
 - 高校先锋活动组织链路。

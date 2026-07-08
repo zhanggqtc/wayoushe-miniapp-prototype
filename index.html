@@ -280,6 +280,74 @@
     }
     .pioneer-line strong { font-size: 12px; }
     .pioneer-line span { color: #b9c5d2; font-size: 11px; }
+    .group-line {
+      margin-top: 10px;
+      padding: 11px;
+      border-radius: 16px;
+      background: rgba(117,244,255,.09);
+      border: 1px solid rgba(117,244,255,.18);
+    }
+    .group-head {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+    }
+    .group-head strong,
+    .pioneer-detail strong { display: block; font-size: 12px; }
+    .group-head span,
+    .pioneer-detail span { display: block; margin-top: 3px; color: #b9c5d2; font-size: 11px; line-height: 1.4; }
+    .group-choice {
+      display: none;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .group-choice.show { display: grid; }
+    .choice-button {
+      min-height: 46px;
+      border-radius: 14px;
+      color: var(--text);
+      background: rgba(255,255,255,.09);
+      border: 1px solid rgba(255,255,255,.12);
+      font-weight: 900;
+      font-size: 12px;
+    }
+    .choice-button.qq { background: rgba(117,244,255,.14); }
+    .choice-button.wechat { background: rgba(87,227,155,.14); }
+    .pioneer-detail {
+      display: none;
+      margin-top: 10px;
+      padding: 11px;
+      border-radius: 16px;
+      background: rgba(0,0,0,.24);
+      border: 1px solid rgba(255,255,255,.08);
+    }
+    .pioneer-detail.show { display: block; }
+    .achievement-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .achievement-item {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 9px;
+      align-items: center;
+      padding: 8px;
+      border-radius: 13px;
+      background: rgba(255,255,255,.055);
+    }
+    .achievement-item b {
+      color: var(--amber);
+      font-size: 15px;
+      letter-spacing: -0.03em;
+    }
+    .achievement-item span {
+      margin: 0;
+      color: #d6e0eb;
+      font-size: 11px;
+    }
     .hero-card {
       border-radius: 28px;
       padding: 18px;
@@ -920,6 +988,20 @@
       showToast.timer = window.setTimeout(() => toast.classList.remove('show'), 1500);
     }
 
+    function toggleGroupChoice() {
+      const panel = document.getElementById('groupChoice');
+      if (panel) panel.classList.toggle('show');
+    }
+
+    function launchGroup(type) {
+      showToast('拉起' + type + '加群流程');
+    }
+
+    function togglePioneerDetail() {
+      const detail = document.getElementById('pioneerDetail');
+      if (detail) detail.classList.toggle('show');
+    }
+
     function home() {
       screen.innerHTML = `
         <section class="campus-card">
@@ -934,9 +1016,28 @@
             <div class="campus-stat"><b>12,846</b><span>本校瓦友社人数</span></div>
             <div class="campus-stat"><b>钻石</b><span>白银 / 黄金 / 钻石 / 神话 / 荣誉</span></div>
           </div>
+          <div class="group-line">
+            <div class="group-head">
+              <div><strong>本校群聊入口</strong><span>加入深圳大学瓦友社群，接收比赛、活动和开黑通知</span></div>
+              <button class="mall-button" onclick="toggleGroupChoice()">加群</button>
+            </div>
+            <div class="group-choice" id="groupChoice">
+              <button class="choice-button qq" onclick="launchGroup('QQ')">加入 QQ 群</button>
+              <button class="choice-button wechat" onclick="launchGroup('微信')">加入微信群</button>
+            </div>
+          </div>
           <div class="pioneer-line">
             <div><strong>本校先锋：陈同学</strong><span> · 负责活动与比赛组织</span></div>
-            <button class="link" onclick="showToast('查看先锋计划')">了解</button>
+            <button class="link" onclick="togglePioneerDetail()">了解</button>
+          </div>
+          <div class="pioneer-detail" id="pioneerDetail">
+            <strong>先锋成就记录</strong>
+            <span>展示该先锋为本校瓦友社组织过的活动规模和履约记录，帮助玩家建立信任。</span>
+            <div class="achievement-list">
+              <div class="achievement-item"><b>6 场</b><span>累计组织校内赛和网吧赛</span></div>
+              <div class="achievement-item"><b>428 人</b><span>累计报名参与，完赛率 82%</span></div>
+              <div class="achievement-item"><b>2 次</b><span>协助官方核心高校活动落地</span></div>
+            </div>
           </div>
         </section>
 
