@@ -315,38 +315,144 @@
     }
     .choice-button.qq { background: rgba(117,244,255,.14); }
     .choice-button.wechat { background: rgba(87,227,155,.14); }
-    .pioneer-detail {
-      display: none;
-      margin-top: 10px;
-      padding: 11px;
-      border-radius: 16px;
-      background: rgba(0,0,0,.24);
-      border: 1px solid rgba(255,255,255,.08);
-    }
-    .pioneer-detail.show { display: block; }
-    .achievement-list {
+    .campus-actions {
       display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 8px;
       margin-top: 10px;
     }
+    .campus-action-button {
+      min-height: 40px;
+      border-radius: 14px;
+      color: var(--text);
+      background: rgba(255,255,255,.085);
+      border: 1px solid rgba(255,255,255,.12);
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .achievement-list {
+      display: grid;
+      gap: 8px;
+      margin-top: 12px;
+    }
     .achievement-item {
       display: grid;
-      grid-template-columns: 42px 1fr;
+      grid-template-columns: 46px 1fr;
       gap: 9px;
       align-items: center;
-      padding: 8px;
-      border-radius: 13px;
+      padding: 9px;
+      border-radius: 14px;
       background: rgba(255,255,255,.055);
     }
     .achievement-item b {
       color: var(--amber);
-      font-size: 15px;
+      font-size: 16px;
       letter-spacing: -0.03em;
     }
     .achievement-item span {
       margin: 0;
       color: #d6e0eb;
       font-size: 11px;
+      line-height: 1.35;
+    }
+    .modal-backdrop {
+      position: absolute;
+      inset: 0;
+      z-index: 60;
+      display: none;
+      align-items: flex-end;
+      padding: 14px;
+      background: rgba(0,0,0,.58);
+      backdrop-filter: blur(10px);
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-sheet {
+      width: 100%;
+      max-height: 74%;
+      overflow-y: auto;
+      border-radius: 26px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 86% 6%, rgba(255,70,85,.16), transparent 32%),
+        #101923;
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow: 0 28px 80px rgba(0,0,0,.5);
+    }
+    .modal-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .modal-title h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.045em;
+    }
+    .modal-title p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .close-button {
+      width: 32px;
+      height: 32px;
+      border-radius: 12px;
+      color: var(--text);
+      background: rgba(255,255,255,.09);
+      font-weight: 900;
+    }
+    .rank-list,
+    .member-list { display: grid; gap: 8px; }
+    .rank-row {
+      display: grid;
+      grid-template-columns: 44px 1fr 38px;
+      gap: 9px;
+      align-items: center;
+      padding: 9px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.055);
+    }
+    .rank-row strong,
+    .rank-row span { font-size: 11px; }
+    .rank-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.1);
+      overflow: hidden;
+    }
+    .rank-track i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--red), var(--amber));
+    }
+    .member-row {
+      display: grid;
+      grid-template-columns: 38px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+      border-radius: 15px;
+      background: rgba(0,0,0,.2);
+      border: 1px solid rgba(255,255,255,.07);
+    }
+    .member-order {
+      color: var(--amber);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .member-row strong { display: block; font-size: 12px; }
+    .member-row span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .member-rank {
+      padding: 5px 7px;
+      border-radius: 999px;
+      color: #071016;
+      background: #b9f7ff;
+      font-size: 10px;
+      font-weight: 900;
     }
     .hero-card {
       border-radius: 28px;
@@ -966,6 +1072,9 @@
           </nav>
         </div>
         <div class="toast" id="toast">已选择今日皮肤</div>
+        <div class="modal-backdrop" id="modalBackdrop" onclick="closeModal(event)">
+          <div class="modal-sheet" id="modalSheet"></div>
+        </div>
       </div>
     </section>
   </main>
@@ -997,9 +1106,64 @@
       showToast('拉起' + type + '加群流程');
     }
 
-    function togglePioneerDetail() {
-      const detail = document.getElementById('pioneerDetail');
-      if (detail) detail.classList.toggle('show');
+    function openModal(content) {
+      const backdrop = document.getElementById('modalBackdrop');
+      const sheet = document.getElementById('modalSheet');
+      if (!backdrop || !sheet) return;
+      sheet.innerHTML = content;
+      backdrop.classList.add('show');
+    }
+
+    function closeModal(event) {
+      if (event && event.currentTarget && event.target !== event.currentTarget) return;
+      const backdrop = document.getElementById('modalBackdrop');
+      if (backdrop) backdrop.classList.remove('show');
+    }
+
+    function openPioneerModal() {
+      openModal(`
+        <div class="modal-title">
+          <div><h3>陈同学的先锋记录</h3><p>本校先锋成就独立弹窗展示，点击弹窗外区域即可关闭。</p></div>
+          <button class="close-button" onclick="closeModal()">×</button>
+        </div>
+        <div class="achievement-list">
+          <div class="achievement-item"><b>6 场</b><span>累计组织校内赛、网吧赛和社团开黑活动</span></div>
+          <div class="achievement-item"><b>428 人</b><span>累计报名参与，活动平均完赛率 82%</span></div>
+          <div class="achievement-item"><b>64 人</b><span>代表活动：深圳大学周末校内对抗赛</span></div>
+          <div class="achievement-item"><b>2 次</b><span>协助官方核心高校活动落地</span></div>
+        </div>
+      `);
+    }
+
+    function openMembersModal() {
+      openModal(`
+        <div class="modal-title">
+          <div><h3>深圳大学认证瓦友</h3><p>展示本校认证玩家顺序和整体段位分布，帮助玩家感知本校瓦友社规模。</p></div>
+          <button class="close-button" onclick="closeModal()">×</button>
+        </div>
+        <section class="section" style="margin-top:0">
+          <div class="section-head"><div class="section-title">段位分布</div><span class="link">12,846 人</span></div>
+          <div class="rank-list">
+            <div class="rank-row"><strong>神话</strong><div class="rank-track"><i style="width:8%"></i></div><span>96</span></div>
+            <div class="rank-row"><strong>超凡</strong><div class="rank-track"><i style="width:22%"></i></div><span>318</span></div>
+            <div class="rank-row"><strong>钻石</strong><div class="rank-track"><i style="width:48%"></i></div><span>1,126</span></div>
+            <div class="rank-row"><strong>铂金</strong><div class="rank-track"><i style="width:72%"></i></div><span>2,804</span></div>
+            <div class="rank-row"><strong>黄金</strong><div class="rank-track"><i style="width:62%"></i></div><span>2,406</span></div>
+            <div class="rank-row"><strong>白银</strong><div class="rank-track"><i style="width:42%"></i></div><span>1,632</span></div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">认证顺序</div><span class="link">展示前 6 位</span></div>
+          <div class="member-list">
+            <div class="member-row"><div class="member-order">#001</div><div><strong>陈同学</strong><span>高校先锋 · 2026.03.12 认证</span></div><span class="member-rank">钻石</span></div>
+            <div class="member-row"><div class="member-order">#002</div><div><strong>北门烟位</strong><span>夜间活跃 · 2026.03.12 认证</span></div><span class="member-rank">铂金</span></div>
+            <div class="member-row"><div class="member-order">#003</div><div><strong>练枪狂热</strong><span>步枪手 · 2026.03.13 认证</span></div><span class="member-rank">黄金</span></div>
+            <div class="member-row"><div class="member-order">#004</div><div><strong>周末赛党</strong><span>常参加活动 · 2026.03.13 认证</span></div><span class="member-rank">钻石</span></div>
+            <div class="member-row"><div class="member-order">#005</div><div><strong>图书馆夜猫</strong><span>凌晨活跃 · 2026.03.14 认证</span></div><span class="member-rank">白银</span></div>
+            <div class="member-row"><div class="member-order">#006</div><div><strong>南区哨位</strong><span>防守位 · 2026.03.15 认证</span></div><span class="member-rank">铂金</span></div>
+          </div>
+        </section>
+      `);
     }
 
     function home() {
@@ -1016,9 +1180,13 @@
             <div class="campus-stat"><b>12,846</b><span>本校瓦友社人数</span></div>
             <div class="campus-stat"><b>钻石</b><span>白银 / 黄金 / 钻石 / 神话 / 荣誉</span></div>
           </div>
+          <div class="campus-actions">
+            <button class="campus-action-button" onclick="openMembersModal()">查看本校成员</button>
+            <button class="campus-action-button" onclick="toggleGroupChoice()">加入本校群聊</button>
+          </div>
           <div class="group-line">
             <div class="group-head">
-              <div><strong>本校群聊入口</strong><span>加入深圳大学瓦友社群，接收比赛、活动和开黑通知</span></div>
+              <div><strong>本校群聊入口</strong><span>二选一加入 QQ 群或微信群，接收比赛、活动和开黑通知</span></div>
               <button class="mall-button" onclick="toggleGroupChoice()">加群</button>
             </div>
             <div class="group-choice" id="groupChoice">
@@ -1028,16 +1196,7 @@
           </div>
           <div class="pioneer-line">
             <div><strong>本校先锋：陈同学</strong><span> · 负责活动与比赛组织</span></div>
-            <button class="link" onclick="togglePioneerDetail()">了解</button>
-          </div>
-          <div class="pioneer-detail" id="pioneerDetail">
-            <strong>先锋成就记录</strong>
-            <span>展示该先锋为本校瓦友社组织过的活动规模和履约记录，帮助玩家建立信任。</span>
-            <div class="achievement-list">
-              <div class="achievement-item"><b>6 场</b><span>累计组织校内赛和网吧赛</span></div>
-              <div class="achievement-item"><b>428 人</b><span>累计报名参与，完赛率 82%</span></div>
-              <div class="achievement-item"><b>2 次</b><span>协助官方核心高校活动落地</span></div>
-            </div>
+            <button class="link" onclick="openPioneerModal()">了解</button>
           </div>
         </section>
 
