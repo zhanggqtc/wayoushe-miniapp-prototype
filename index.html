@@ -872,6 +872,134 @@
     }
     .confirm-card strong { display: block; font-size: 14px; }
     .confirm-card span { display: block; margin-top: 6px; color: #c7d2de; font-size: 11px; line-height: 1.45; }
+    .auth-hero {
+      border-radius: 28px;
+      padding: 18px;
+      background:
+        radial-gradient(circle at 82% 10%, rgba(117,244,255,.18), transparent 34%),
+        linear-gradient(145deg, rgba(255,70,85,.16), rgba(255,255,255,.05));
+      border: 1px solid rgba(255,255,255,.12);
+    }
+    .auth-hero h2 {
+      margin: 0;
+      font-size: 25px;
+      line-height: 1.08;
+      letter-spacing: -0.05em;
+    }
+    .auth-hero p {
+      margin: 8px 0 0;
+      color: #b9c5d2;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .auth-stepper {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .auth-step {
+      padding: 9px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.07);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      text-align: center;
+    }
+    .auth-step.active {
+      color: #071016;
+      background: var(--amber);
+    }
+    .form-list { display: grid; gap: 10px; }
+    .form-field {
+      display: grid;
+      gap: 6px;
+    }
+    .form-field label {
+      color: #d8e2ee;
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .form-field input,
+    .form-field select {
+      width: 100%;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      padding: 0 12px;
+      color: var(--text);
+      background: rgba(0,0,0,.24);
+      outline: none;
+    }
+    .form-field small {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.35;
+    }
+    .locked-card {
+      position: relative;
+      overflow: hidden;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(0,0,0,.24);
+      border: 1px dashed rgba(255,255,255,.18);
+    }
+    .locked-card::after {
+      content: "认证后可见";
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      color: #071016;
+      background: rgba(244,247,251,.74);
+      backdrop-filter: blur(8px);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .check-row {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 15px;
+      background: rgba(255,255,255,.055);
+    }
+    .check-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: #071016;
+      background: var(--green);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .check-row strong { display: block; font-size: 12px; }
+    .check-row span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; }
+    .privacy-note {
+      padding: 12px;
+      border-radius: 16px;
+      color: #c7d2de;
+      background: rgba(117,244,255,.08);
+      border: 1px solid rgba(117,244,255,.14);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .success-mark {
+      width: 62px;
+      height: 62px;
+      border-radius: 23px;
+      display: grid;
+      place-items: center;
+      color: #071016;
+      background: var(--green);
+      font-size: 28px;
+      font-weight: 950;
+      margin-bottom: 12px;
+    }
     .buddy-strip {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -1048,6 +1176,9 @@
       <p>这版把第一个 Tab 设计成“我的高校瓦友社今日面板”。核心不是资讯流，而是每日皮肤自选、活动雷达、同校动态和同好雷达的组合。</p>
       <div class="brief-actions">
         <button class="pill-button" onclick="setTab('home')">看首页</button>
+        <button class="pill-button secondary" onclick="accountBind()">账号绑定</button>
+        <button class="pill-button secondary" onclick="unauthHome()">未认证态</button>
+        <button class="pill-button secondary" onclick="authStep1()">认证流程</button>
         <button class="pill-button secondary" onclick="setTab('activity')">看活动链路</button>
         <button class="pill-button secondary" onclick="setTab('buddy')">看同好雷达</button>
       </div>
@@ -1164,6 +1295,139 @@
           </div>
         </section>
       `);
+    }
+
+    function accountBind() {
+      screen.innerHTML = `
+        <div class="topbar">
+          <div><div class="school-name">添加游戏账号</div><div class="school-meta">登录后先绑定无畏契约角色</div></div>
+          <button class="link" onclick="unauthHome()">跳过</button>
+        </div>
+        <section class="auth-hero">
+          <h2>把微信身份和游戏角色关联起来</h2>
+          <p>后续高校认证、皮肤任务核验、同好雷达画像都会基于这个游戏账号识别。</p>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">游戏账号信息</div><span class="link">必填</span></div>
+          <div class="form-list">
+            <div class="form-field"><label>登录区服</label><select><option>微信区</option><option>QQ 区</option></select><small>用于后续拉起对应账号授权与角色校验。</small></div>
+            <div class="form-field"><label>游戏昵称</label><input value="北门烟位" /><small>请填写当前无畏契约游戏内昵称。</small></div>
+            <div class="form-field"><label>角色 ID</label><input value="VAL-SZU-0826" /><small>系统会自动校验角色是否存在，避免误绑。</small></div>
+          </div>
+          <div class="cta-row"><button class="cta" onclick="unauthHome()">绑定账号</button><button class="cta ghost" onclick="showToast('拉起官方账号授权')">官方授权</button></div>
+        </section>
+        <section class="section">
+          <div class="privacy-note">绑定成功后，用户仍需完成高校认证，才可查看完整瓦友社信息、参与皮肤自选和进入本校群聊。</div>
+        </section>
+      `;
+    }
+
+    function unauthHome() {
+      screen.innerHTML = `
+        <section class="campus-card">
+          <div class="campus-main">
+            <div><div class="campus-title">高校瓦友社</div><div class="campus-verify">游戏账号已添加 · 高校认证未完成</div></div>
+            <span class="level-badge">待认证</span>
+          </div>
+          <div class="campus-stats">
+            <div class="campus-stat"><b>--</b><span>认证后查看本校人数</span></div>
+            <div class="campus-stat"><b>--</b><span>认证后查看瓦友社等级</span></div>
+          </div>
+          <div class="campus-actions">
+            <button class="campus-action-button" onclick="authStep1()">完成高校认证</button>
+            <button class="campus-action-button" onclick="showToast('认证后开放群聊入口')">加入本校群聊</button>
+          </div>
+        </section>
+        <section class="auth-hero">
+          <h2>完成高校认证，解锁本校瓦友社</h2>
+          <p>认证后可查看本校成员、段位分布、本校先锋、群聊入口，并参与高校特权皮肤自选。</p>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">当前隐藏内容</div><span class="link">认证后可见</span></div>
+          <div class="locked-card"><div class="activity-name">本校成员列表、认证顺序、段位分布</div><div class="activity-meta">展示同校认证玩家和整体段位结构</div></div>
+          <div class="locked-card" style="margin-top:10px"><div class="activity-name">今日高校特权皮肤与下月自选槽</div><div class="activity-meta">认证后可选择皮肤并完成任务锁定权益</div></div>
+          <div class="locked-card" style="margin-top:10px"><div class="activity-name">本校 QQ / 微信群聊入口</div><div class="activity-meta">认证后自动拉起对应加群流程</div></div>
+          <div class="cta-row"><button class="cta" onclick="authStep1()">去认证</button><button class="cta ghost" onclick="accountBind()">换绑账号</button></div>
+        </section>
+      `;
+    }
+
+    function authStep1() {
+      screen.innerHTML = `
+        <div class="topbar"><div><div class="school-name">高校认证</div><div class="school-meta">第 1 步 · 填写认证信息</div></div><button class="link" onclick="unauthHome()">返回</button></div>
+        <section class="auth-hero">
+          <h2>填写你的高校身份信息</h2>
+          <p>信息用于校验高校特权资格，认证通过后自动进入对应学校瓦友社。</p>
+          <div class="auth-stepper"><div class="auth-step active">信息输入</div><div class="auth-step">信息校验</div><div class="auth-step">确认提交</div></div>
+        </section>
+        <section class="section">
+          <div class="form-list">
+            <div class="form-field"><label>学校</label><input value="深圳大学" /></div>
+            <div class="form-field"><label>姓名</label><input value="陈同学" /></div>
+            <div class="form-field"><label>学号</label><input value="2026****0826" /></div>
+            <div class="form-field"><label>院系 / 年级</label><input value="计算机学院 · 2026 级" /></div>
+          </div>
+          <div class="cta-row"><button class="cta" onclick="authStep2()">下一步</button><button class="cta ghost" onclick="showToast('保存草稿')">保存</button></div>
+        </section>
+      `;
+    }
+
+    function authStep2() {
+      screen.innerHTML = `
+        <div class="topbar"><div><div class="school-name">高校认证</div><div class="school-meta">第 2 步 · 信息校验</div></div><button class="link" onclick="authStep1()">上一步</button></div>
+        <section class="auth-hero">
+          <h2>系统正在校验资格</h2>
+          <p>校验会复用已有高校特权认证体系，并关联你的无畏契约游戏角色。</p>
+          <div class="auth-stepper"><div class="auth-step">信息输入</div><div class="auth-step active">信息校验</div><div class="auth-step">确认提交</div></div>
+        </section>
+        <section class="section">
+          <div class="radar-list">
+            <div class="check-row"><div class="check-icon">✓</div><div><strong>学校信息匹配</strong><span>已识别为深圳大学高校用户</span></div><span class="mini-status">通过</span></div>
+            <div class="check-row"><div class="check-icon">✓</div><div><strong>游戏账号已关联</strong><span>微信区 · 北门烟位 · VAL-SZU-0826</span></div><span class="mini-status">通过</span></div>
+            <div class="check-row"><div class="check-icon">…</div><div><strong>高校特权资格校验</strong><span>正在校验学生身份与高校特权状态</span></div><span class="mini-status pending">校验中</span></div>
+          </div>
+          <div class="cta-row"><button class="cta" onclick="authStep3()">校验完成</button><button class="cta ghost" onclick="showToast('重新校验')">重试</button></div>
+        </section>
+      `;
+    }
+
+    function authStep3() {
+      screen.innerHTML = `
+        <div class="topbar"><div><div class="school-name">高校认证</div><div class="school-meta">第 3 步 · 确认信息</div></div><button class="link" onclick="authStep2()">上一步</button></div>
+        <section class="auth-hero">
+          <h2>确认后加入深圳大学瓦友社</h2>
+          <p>确认后会解锁本校信息、皮肤自选、活动报名和群聊入口。</p>
+          <div class="auth-stepper"><div class="auth-step">信息输入</div><div class="auth-step">信息校验</div><div class="auth-step active">确认提交</div></div>
+        </section>
+        <section class="section">
+          <div class="template-list">
+            <div class="template-item"><strong>认证学校</strong><span>深圳大学 · 钻石瓦友社</span></div>
+            <div class="template-item"><strong>认证身份</strong><span>2026 级 · 计算机学院 · 高校特权用户</span></div>
+            <div class="template-item"><strong>游戏账号</strong><span>微信区 · 北门烟位 · VAL-SZU-0826</span></div>
+          </div>
+          <div class="privacy-note" style="margin-top:12px">确认后，你的昵称、段位区间和认证顺序会在本校成员弹窗中展示，游戏 ID 不会默认对外公开。</div>
+          <div class="cta-row"><button class="cta" onclick="authSuccess()">确认认证</button><button class="cta ghost" onclick="authStep1()">修改信息</button></div>
+        </section>
+      `;
+    }
+
+    function authSuccess() {
+      screen.innerHTML = `
+        <section class="auth-hero">
+          <div class="success-mark">✓</div>
+          <h2>高校认证成功</h2>
+          <p>你已加入深圳大学瓦友社，今日皮肤自选、本校活动、同好雷达和群聊入口已解锁。</p>
+        </section>
+        <section class="section">
+          <div class="section-head"><div class="section-title">加入本校社群</div><span class="link">推荐下一步</span></div>
+          <div class="group-choice show">
+            <button class="choice-button qq" onclick="launchGroup('QQ')">加入 QQ 群</button>
+            <button class="choice-button wechat" onclick="launchGroup('微信')">加入微信群</button>
+          </div>
+          <div class="privacy-note" style="margin-top:12px">社群用于接收本校比赛、活动、开黑和先锋通知。你也可以稍后在首页再次加入。</div>
+          <div class="cta-row"><button class="cta" onclick="home()">进入瓦友社</button><button class="cta ghost" onclick="openMembersModal()">看本校成员</button></div>
+        </section>
+      `;
     }
 
     function home() {
