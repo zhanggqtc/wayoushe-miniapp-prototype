@@ -278,6 +278,35 @@
       background: rgba(255,70,85,.10);
       border: 1px solid rgba(255,70,85,.18);
     }
+    .official-notice {
+      margin: 0 0 16px;
+      padding: 13px;
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      gap: 10px;
+      align-items: center;
+      border-radius: 19px;
+      color: var(--text);
+      text-align: left;
+      background:
+        radial-gradient(circle at 92% 18%, rgba(255,204,102,.2), transparent 32%),
+        linear-gradient(145deg, rgba(255,70,85,.16), rgba(255,255,255,.055));
+      border: 1px solid rgba(255,70,85,.24);
+    }
+    .official-notice-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #071016;
+      background: var(--red);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .official-notice strong { display: block; font-size: 12px; }
+    .official-notice span { display: block; margin-top: 4px; color: #c8d3df; font-size: 10px; line-height: 1.35; }
+    .official-notice em { color: var(--amber); font-size: 14px; font-style: normal; font-weight: 950; }
     .pioneer-line strong { font-size: 12px; }
     .pioneer-line span { color: #b9c5d2; font-size: 11px; }
     .group-line {
@@ -1645,6 +1674,12 @@
             <button class="link" onclick="openPioneerModal()">了解</button>
           </div>
         </section>
+
+        <button class="official-notice" onclick="showToast('打开官方活动通知详情')">
+          <div class="official-notice-mark">官</div>
+          <div><strong>官方活动通知 · 高校夏日挑战赛开放报名</strong><span>全高校认证用户可参与，本周阶段任务和活动积分已上线。</span></div>
+          <em>›</em>
+        </button>
 
         <section class="hero-card">
           <div class="module-head">
