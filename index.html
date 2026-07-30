@@ -1240,6 +1240,50 @@
     }
     .tool-card strong { display: block; font-size: 13px; line-height: 1.25; }
     .tool-card span { display: block; margin-top: 7px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .subtool-list {
+      display: grid;
+      gap: 10px;
+    }
+    .subtool-card {
+      min-height: 74px;
+      padding: 12px;
+      border-radius: 17px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      text-align: left;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.09);
+    }
+    .subtool-card strong { display: block; font-size: 13px; }
+    .subtool-card span { display: block; margin-top: 5px; color: var(--muted); font-size: 10px; line-height: 1.4; }
+    .subtool-card em { color: var(--amber); font-style: normal; font-size: 18px; font-weight: 950; }
+    .path-line {
+      margin-bottom: 12px;
+      color: #c8d3df;
+      font-size: 11px;
+    }
+    .operation-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .operation-card {
+      padding: 12px;
+      border-radius: 17px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .operation-card strong { display: block; font-size: 13px; }
+    .operation-card span { display: block; margin-top: 6px; color: var(--muted); font-size: 10px; line-height: 1.45; }
+    .operation-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
     .module-hero {
       border-radius: 26px;
       padding: 18px;
@@ -1770,57 +1814,191 @@
       `;
     }
 
-    function pioneerSchool() {
+    function renderOperationPage(title, meta, parentFn, heroTitle, heroCopy, operations) {
       screen.innerHTML = `
-        <div class="topbar"><div><div class="school-name">学校管理</div><div class="school-meta">群聊、校队、成就、联系方式和换届</div></div><button class="link" onclick="mine()">返回</button></div>
-        <section class="module-hero"><h2>维护深圳大学瓦友社基础资产</h2><p>先锋可管理本校社群、校队成员和对外展示信息，关键变更需要留痕。</p></section>
-        <section class="section"><div class="template-list">
-          <div class="template-item"><strong>本校群聊管理</strong><span>QQ 群上传或更新二维码；微信群可发布公告和踢人；掌瓦群聊可发布公告。</span></div>
-          <div class="template-item"><strong>校队管理</strong><span>邀请认证玩家加入本校校队，可将队员退役或清退。</span></div>
-          <div class="template-item"><strong>本校成就展示</strong><span>自动拉取本校做过的活动，选择 1-3 个对外展示。</span></div>
-          <div class="template-item"><strong>个人联系方式</strong><span>编辑方便官方建联的联系方式，可选择向本校玩家开放，并维护收货地址。</span></div>
-          <div class="template-item"><strong>换届申请</strong><span>发起换届将先锋资格交给其他人，或点击退役将先锋位空置。</span></div>
+        <div class="topbar"><div><div class="school-name">${title}</div><div class="school-meta">${meta}</div></div><button class="link" onclick="${parentFn}()">返回</button></div>
+        <section class="module-hero"><div class="path-line">我的 / 先锋管理工具 / ${title}</div><h2>${heroTitle}</h2><p>${heroCopy}</p></section>
+        <section class="section"><div class="operation-grid">
+          ${operations.map(item => `
+            <div class="operation-card">
+              <strong>${item.title}</strong>
+              <span>${item.desc}</span>
+              <div class="operation-actions">${item.actions.map(action => `<button class="mall-button" onclick="showToast('${action.toast}')">${action.label}</button>`).join('')}</div>
+            </div>
+          `).join('')}
         </div></section>
       `;
+    }
+
+    function pioneerSchool() {
+      screen.innerHTML = `
+        <div class="topbar"><div><div class="school-name">学校管理</div><div class="school-meta">一级模块 / 点击进入具体管理页</div></div><button class="link" onclick="mine()">返回</button></div>
+        <section class="module-hero"><h2>维护深圳大学瓦友社基础资产</h2><p>这里是学校管理总览，具体功能都进入独立子页操作。</p></section>
+        <section class="section"><div class="subtool-list">
+          <button class="subtool-card" onclick="schoolGroups()"><div><strong>本校群聊管理</strong><span>进入后分别管理 QQ、微信、掌瓦群聊。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="schoolTeam()"><div><strong>校队管理</strong><span>邀请玩家入队，处理退役和清退。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="schoolAchievements()"><div><strong>本校成就展示</strong><span>从活动记录中选择 1-3 个对外展示。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="schoolContact()"><div><strong>个人联系方式</strong><span>维护官方建联、玩家可见信息和收货地址。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="schoolSuccession()"><div><strong>换届申请</strong><span>交接先锋资格，或退役并空置先锋位。</span></div><em>›</em></button>
+        </div></section>
+      `;
+    }
+
+    function schoolGroups() {
+      renderOperationPage('本校群聊管理', '二级子页 / QQ、微信、掌瓦', 'pioneerSchool', '三类群聊分开维护', '先锋先进入群聊管理子页，再选择具体群聊渠道执行操作。', [
+        { title: 'QQ 群聊', desc: '上传或更新 QQ 群二维码，配置群号、有效期和玩家可见状态。', actions: [{ label: '上传二维码', toast: '上传 QQ 群二维码' }, { label: '更新群号', toast: '更新 QQ 群号' }] },
+        { title: '微信群聊', desc: '维护微信群公告，处理群成员移出和入群说明。', actions: [{ label: '发布公告', toast: '发布微信群公告' }, { label: '踢人管理', toast: '进入微信群踢人管理' }] },
+        { title: '掌瓦群聊', desc: '同步掌瓦群公告，维护活动通知和本校群聊说明。', actions: [{ label: '发布公告', toast: '发布掌瓦群公告' }, { label: '同步内容', toast: '同步掌瓦群信息' }] }
+      ]);
+    }
+
+    function schoolTeam() {
+      renderOperationPage('校队管理', '二级子页 / 队员生命周期', 'pioneerSchool', '管理本校校队名单', '校队成员只从本校认证玩家中邀请，所有清退和退役操作需要留痕。', [
+        { title: '邀请玩家加入校队', desc: '搜索本校认证玩家，发送校队邀请并等待对方确认。', actions: [{ label: '添加邀请', toast: '发起校队邀请' }] },
+        { title: '现役队员管理', desc: '查看位置、段位、参赛次数和最近活动状态。', actions: [{ label: '查看名单', toast: '查看校队名单' }] },
+        { title: '退役或清退', desc: '将队员设为退役，或因违规、长期不活跃进行清退。', actions: [{ label: '处理队员', toast: '进入队员处理' }] }
+      ]);
+    }
+
+    function schoolAchievements() {
+      renderOperationPage('本校成就展示', '二级子页 / 选择 1-3 个展示', 'pioneerSchool', '把本校活动成果展示出来', '系统自动拉取本校历史活动，先锋只选择对外展示的代表案例。', [
+        { title: '自动活动库', desc: '从已审核、已结束活动中拉取报名人数、完赛率和官方协办记录。', actions: [{ label: '查看活动库', toast: '查看本校活动库' }] },
+        { title: '对外展示位', desc: '最多选择 3 个活动作为本校瓦友社成就展示。', actions: [{ label: '选择展示', toast: '选择成就展示' }] },
+        { title: '展示预览', desc: '预览普通玩家在首页看到的成就卡片。', actions: [{ label: '预览', toast: '预览成就展示' }] }
+      ]);
+    }
+
+    function schoolContact() {
+      renderOperationPage('个人联系方式', '二级子页 / 官方建联和收货', 'pioneerSchool', '维护可联系、可履约的信息', '联系方式默认仅官方可见，先锋可选择部分信息向本校玩家开放。', [
+        { title: '官方建联信息', desc: '维护手机号、微信、QQ 和常用联系时间。', actions: [{ label: '编辑', toast: '编辑官方建联信息' }] },
+        { title: '本校玩家可见信息', desc: '选择是否展示微信、QQ 或仅展示站内联系入口。', actions: [{ label: '设置可见', toast: '设置玩家可见联系方式' }] },
+        { title: '收货地址维护', desc: '用于官方物料、赛事奖励和先锋福利寄送。', actions: [{ label: '维护地址', toast: '维护收货地址' }] }
+      ]);
+    }
+
+    function schoolSuccession() {
+      renderOperationPage('换届申请', '二级子页 / 交接或退役', 'pioneerSchool', '让先锋身份有清晰交接', '换届和退役都需要官方确认，避免本校活动组织突然中断。', [
+        { title: '发起换届', desc: '选择一名本校认证玩家作为候选先锋，提交交接原因。', actions: [{ label: '发起换届', toast: '发起先锋换届' }] },
+        { title: '退役申请', desc: '申请退役后先锋位暂时空置，本校等待新先锋补位。', actions: [{ label: '申请退役', toast: '提交退役申请' }] },
+        { title: '交接记录', desc: '查看历史换届、审批状态和交接备注。', actions: [{ label: '查看记录', toast: '查看换届记录' }] }
+      ]);
     }
 
     function pioneerGrowth() {
       screen.innerHTML = `
-        <div class="topbar"><div><div class="school-name">个人成长</div><div class="school-meta">活动履历和先锋福利</div></div><button class="link" onclick="mine()">返回</button></div>
-        <section class="module-hero"><h2>记录先锋贡献和权益领取</h2><p>这里沉淀每一次活动申请、组织结果和仅面向先锋的福利兑换。</p></section>
-        <section class="section"><div class="section-head"><div class="section-title">活动记录</div><span class="link">按条记录</span></div><div class="template-list">
-          <div class="template-item"><strong>深大周末校内对抗赛</strong><span>6 月 28 日 · 64 人报名 · 已完赛 · 组织积分已结算</span></div>
-          <div class="template-item"><strong>南山网吧高校夜赛</strong><span>7 月 03 日 · 48 人报名 · 进行中 · 待提交反馈</span></div>
-          <div class="template-item"><strong>华南片区高校挑战赛</strong><span>7 月 18 日 · 核心活动 · 审批中 · 等待官方回执</span></div>
+        <div class="topbar"><div><div class="school-name">个人成长</div><div class="school-meta">一级模块 / 活动履历和先锋福利</div></div><button class="link" onclick="mine()">返回</button></div>
+        <section class="module-hero"><h2>记录先锋贡献和权益领取</h2><p>每个功能进入独立子页处理，不在总览页直接操作。</p></section>
+        <section class="section"><div class="subtool-list">
+          <button class="subtool-card" onclick="growthRecords()"><div><strong>活动记录</strong><span>按条查看自己发起申请的每一个活动。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="growthShop()"><div><strong>兑换商店</strong><span>仅面向先锋的福利兑换领取流程。</span></div><em>›</em></button>
         </div></section>
-        <section class="section"><div class="points-card"><div><b>先锋兑换商店</b><span>仅面向先锋的福利领取流程，包含物料包、赛事支持和纪念周边。</span></div><button class="mall-button" onclick="showToast('进入先锋兑换')">进入</button></div></section>
       `;
+    }
+
+    function growthRecords() {
+      renderOperationPage('活动记录', '二级子页 / 逐条履历', 'pioneerGrowth', '每一场活动都是先锋履历', '记录活动名称、时间、参与情况、审批状态、玩家反馈和积分结算。', [
+        { title: '深大周末校内对抗赛', desc: '6 月 28 日，64 人报名，已完赛，组织积分已结算。', actions: [{ label: '看详情', toast: '查看活动详情' }] },
+        { title: '南山网吧高校夜赛', desc: '7 月 3 日，48 人报名，进行中，待提交反馈。', actions: [{ label: '继续管理', toast: '继续管理活动' }] },
+        { title: '华南片区高校挑战赛', desc: '7 月 18 日，核心活动，审批中，等待官方回执。', actions: [{ label: '看回执', toast: '查看审批回执' }] }
+      ]);
+    }
+
+    function growthShop() {
+      renderOperationPage('先锋兑换商店', '二级子页 / 先锋专属福利', 'pioneerGrowth', '只面向先锋的福利领取', '用于领取活动物料包、赛事支持、纪念周边和先锋激励。', [
+        { title: '活动物料包', desc: '海报、桌牌、手环、贴纸等线下活动物料。', actions: [{ label: '领取', toast: '领取活动物料包' }] },
+        { title: '赛事支持包', desc: '面向比赛组织的奖品、道具和官方支持资源。', actions: [{ label: '申请', toast: '申请赛事支持' }] },
+        { title: '先锋纪念周边', desc: '按贡献等级开放的限定纪念品。', actions: [{ label: '兑换', toast: '兑换先锋周边' }] }
+      ]);
     }
 
     function pioneerActivity() {
       screen.innerHTML = `
-        <div class="topbar"><div><div class="school-name">活动组织</div><div class="school-meta">申请、管理、指南和海报</div></div><button class="link" onclick="mine()">返回</button></div>
-        <section class="module-hero"><h2>从创建到宣传的活动工具箱</h2><p>先锋通过模板申请活动，并用 AI 工具降低组织和宣传成本。</p></section>
-        <section class="section"><div class="tool-grid">
-          <button class="tool-card" onclick="showToast('进入活动申请表')"><strong>创建新活动</strong><span>选择活动类型后，按字段填写活动申请。</span></button>
-          <button class="tool-card" onclick="showToast('查看审批和反馈')"><strong>进行中的活动管理</strong><span>查看审批回执、报名状态和玩家反馈。</span></button>
-          <button class="tool-card" onclick="showToast('启动 AI 活动指南')"><strong>活动指南</strong><span>AI 指导活动组织，给出流程、物料和风险提醒。</span></button>
-          <button class="tool-card" onclick="showToast('启动 AI 海报制作')"><strong>海报制作</strong><span>独立 AI 海报工具，自动带入活动信息。</span></button>
+        <div class="topbar"><div><div class="school-name">活动组织</div><div class="school-meta">一级模块 / 申请、管理、指南和海报</div></div><button class="link" onclick="mine()">返回</button></div>
+        <section class="module-hero"><h2>从创建到宣传的活动工具箱</h2><p>每个工具进入独立子页，避免活动页里混入先锋后台能力。</p></section>
+        <section class="section"><div class="subtool-list">
+          <button class="subtool-card" onclick="activityCreate()"><div><strong>创建新活动</strong><span>选择活动类型后填写申请字段。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="activityOngoing()"><div><strong>进行中的活动管理</strong><span>查看审批回执、报名状态和玩家反馈。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="activityGuide()"><div><strong>活动指南</strong><span>AI 指导活动组织。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="activityPoster()"><div><strong>海报制作</strong><span>独立 AI 海报工具。</span></div><em>›</em></button>
         </div></section>
       `;
     }
 
+    function activityCreate() {
+      renderOperationPage('创建新活动', '二级子页 / 活动申请表', 'pioneerActivity', '按活动类型生成对应字段', '先锋先选择活动类型，再填写时间、地点、人数、奖励、报名方式和审核材料。', [
+        { title: '选择活动类型', desc: '校内赛、网吧赛、官方协办、日常活动，不同类型生成不同字段。', actions: [{ label: '选择类型', toast: '选择活动类型' }] },
+        { title: '填写活动字段', desc: '时间、地点、人数、赛制、积分、奖励、报名条件和注意事项。', actions: [{ label: '填表', toast: '填写活动申请表' }] },
+        { title: '提交审核', desc: '核心活动、比赛和含奖励活动提交官方审核。', actions: [{ label: '提交', toast: '提交活动审核' }] }
+      ]);
+    }
+
+    function activityOngoing() {
+      renderOperationPage('进行中的活动管理', '二级子页 / 审批和反馈', 'pioneerActivity', '管理已提交和已发布活动', '用于查看审批回执、处理玩家反馈、更新活动进度和补充结果材料。', [
+        { title: '审批回执', desc: '查看通过、驳回、补充材料等官方意见。', actions: [{ label: '看回执', toast: '查看审批回执' }] },
+        { title: '玩家反馈', desc: '收集报名、签到、赛程和活动体验反馈。', actions: [{ label: '处理反馈', toast: '处理玩家反馈' }] },
+        { title: '结果提交', desc: '活动结束后提交签到、完赛、名次和现场照片。', actions: [{ label: '提交结果', toast: '提交活动结果' }] }
+      ]);
+    }
+
+    function activityGuide() {
+      renderOperationPage('活动指南', '二级子页 / AI 组织助手', 'pioneerActivity', 'AI 指导活动组织', '根据活动类型生成流程、物料清单、主持话术、风险提醒和赛程建议。', [
+        { title: '生成活动流程', desc: '按活动类型生成从预热、报名、签到到复盘的流程。', actions: [{ label: '生成流程', toast: 'AI 生成活动流程' }] },
+        { title: '物料和人员清单', desc: '列出需要的场地、物料、工作人员和时间节点。', actions: [{ label: '生成清单', toast: 'AI 生成物料清单' }] },
+        { title: '风险提醒', desc: '提醒迟到、弃赛、群公告、奖励发放和线下安全风险。', actions: [{ label: '查看提醒', toast: '查看风险提醒' }] }
+      ]);
+    }
+
+    function activityPoster() {
+      renderOperationPage('海报制作', '二级子页 / AI 宣传工具', 'pioneerActivity', '把活动信息变成宣传图', '独立 AI 海报工具，自动带入活动名称、时间、地点、赛制、奖励和报名入口。', [
+        { title: '选择海报用途', desc: '比赛报名、活动预热、结果公布、群公告配图。', actions: [{ label: '选择用途', toast: '选择海报用途' }] },
+        { title: '生成候选海报', desc: '生成 1-3 张候选海报，供先锋选择。', actions: [{ label: '生成', toast: 'AI 生成海报' }] },
+        { title: '保存和分享', desc: '保存到相册、设为活动封面或分享到群聊。', actions: [{ label: '保存', toast: '保存海报' }] }
+      ]);
+    }
+
     function pioneerOfficial() {
       screen.innerHTML = `
-        <div class="topbar"><div><div class="school-name">官方建联</div><div class="school-meta">客服、举报、反馈和邀约</div></div><button class="link" onclick="mine()">返回</button></div>
-        <section class="module-hero"><h2>先锋和官方的工作台</h2><p>处理官方沟通、玩家举报、系统反馈，以及官方发起的活动邀约。</p></section>
-        <section class="section"><div class="template-list">
-          <div class="template-item"><strong>官方客服联系方式</strong><span>点击添加官方建联，建立稳定沟通渠道。</span></div>
-          <div class="template-item"><strong>本校玩家举报信</strong><span>收集本校玩家举报，按活动、群聊和成员分类处理。</span></div>
-          <div class="template-item"><strong>官方系统反馈</strong><span>提交活动系统、群聊工具、认证和积分问题。</span></div>
-          <div class="template-item"><strong>官方活动邀约</strong><span>由官方发起的活动提议，点击后自动申请或创建相关主题活动。</span></div>
+        <div class="topbar"><div><div class="school-name">官方建联</div><div class="school-meta">一级模块 / 客服、举报、反馈和邀约</div></div><button class="link" onclick="mine()">返回</button></div>
+        <section class="module-hero"><h2>先锋和官方的工作台</h2><p>每个沟通场景进入独立子页，避免把消息、反馈和邀约混在一起。</p></section>
+        <section class="section"><div class="subtool-list">
+          <button class="subtool-card" onclick="officialContact()"><div><strong>官方客服联系方式</strong><span>点击添加建联。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="officialReports()"><div><strong>本校玩家举报信</strong><span>收集本校玩家举报。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="officialFeedback()"><div><strong>官方系统反馈</strong><span>提交系统问题。</span></div><em>›</em></button>
+          <button class="subtool-card" onclick="officialInvites()"><div><strong>官方活动邀约</strong><span>官方发起的活动提议。</span></div><em>›</em></button>
         </div></section>
       `;
+    }
+
+    function officialContact() {
+      renderOperationPage('官方客服联系方式', '二级子页 / 建联入口', 'pioneerOfficial', '快速找到官方支持', '用于添加官方客服、查看负责运营和维护紧急联系方式。', [
+        { title: '添加官方客服', desc: '拉起官方客服账号或二维码，建立常用沟通渠道。', actions: [{ label: '添加', toast: '添加官方客服' }] },
+        { title: '负责运营信息', desc: '查看本校对应官方运营负责人和服务时间。', actions: [{ label: '查看', toast: '查看官方运营' }] },
+        { title: '紧急联系', desc: '活动当天异常、线下风险和重大投诉处理入口。', actions: [{ label: '联系', toast: '发起紧急联系' }] }
+      ]);
+    }
+
+    function officialReports() {
+      renderOperationPage('本校玩家举报信', '二级子页 / 举报收件箱', 'pioneerOfficial', '集中处理本校玩家举报', '举报按群聊、活动、校队和成员分类，先锋可初筛后提交官方。', [
+        { title: '举报收件箱', desc: '查看待处理、处理中、已提交官方的举报。', actions: [{ label: '查看', toast: '查看举报信' }] },
+        { title: '分类处理', desc: '按活动、群聊、校队、成员进行分类。', actions: [{ label: '分类', toast: '分类举报' }] },
+        { title: '提交官方', desc: '严重问题一键提交官方复核。', actions: [{ label: '提交', toast: '提交官方复核' }] }
+      ]);
+    }
+
+    function officialFeedback() {
+      renderOperationPage('官方系统反馈', '二级子页 / 问题反馈', 'pioneerOfficial', '反馈系统和流程问题', '覆盖认证、活动、群聊、积分、商城和先锋工具异常。', [
+        { title: '选择问题类型', desc: '认证、活动、群聊、积分、商城或其他。', actions: [{ label: '选择', toast: '选择反馈类型' }] },
+        { title: '提交问题描述', desc: '填写复现路径、截图、影响范围和紧急程度。', actions: [{ label: '提交', toast: '提交系统反馈' }] },
+        { title: '处理进度', desc: '查看官方回复、状态和补充材料要求。', actions: [{ label: '查看进度', toast: '查看反馈进度' }] }
+      ]);
+    }
+
+    function officialInvites() {
+      renderOperationPage('官方活动邀约', '二级子页 / 自动创建活动', 'pioneerOfficial', '接住官方发起的活动提议', '官方发出活动邀约后，先锋可一键申请或自动创建相关主题活动。', [
+        { title: '邀约列表', desc: '查看官方发给本校的活动提议和参与要求。', actions: [{ label: '查看邀约', toast: '查看官方邀约' }] },
+        { title: '一键申请', desc: '接受邀约并自动生成活动申请草稿。', actions: [{ label: '申请', toast: '申请官方邀约' }] },
+        { title: '创建主题活动', desc: '按官方主题自动带入活动名、规则、物料和积分配置。', actions: [{ label: '创建', toast: '创建主题活动' }] }
+      ]);
     }
 
     function mine() {
