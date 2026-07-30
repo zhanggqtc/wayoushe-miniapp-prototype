@@ -734,6 +734,90 @@
       font-size: 10px;
       white-space: nowrap;
     }
+    .ongoing-pin {
+      position: sticky;
+      top: -18px;
+      z-index: 12;
+      margin: -2px -4px 18px;
+      padding: 10px;
+      border-radius: 22px;
+      background: rgba(9,14,20,.88);
+      border: 1px solid rgba(255,255,255,.12);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 14px 32px rgba(0,0,0,.28);
+    }
+    .ongoing-card {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 17px;
+      background: linear-gradient(145deg, rgba(255,70,85,.18), rgba(255,255,255,.06));
+      border: 1px solid rgba(255,70,85,.2);
+    }
+    .ongoing-card strong { display: block; font-size: 13px; }
+    .ongoing-card span { display: block; margin-top: 4px; color: #b9c5d2; font-size: 10px; line-height: 1.35; }
+    .activity-card {
+      overflow: hidden;
+      border-radius: 24px;
+      background: rgba(255,255,255,.055);
+      border: 1px solid rgba(255,255,255,.1);
+    }
+    .activity-cover {
+      height: 122px;
+      background:
+        radial-gradient(circle at 78% 20%, rgba(255,204,102,.24), transparent 32%),
+        radial-gradient(circle at 22% 18%, rgba(255,70,85,.22), transparent 36%),
+        linear-gradient(145deg, rgba(117,244,255,.12), rgba(255,255,255,.04));
+    }
+    .activity-content { padding: 14px; }
+    .activity-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+    .activity-tag {
+      padding: 5px 7px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.09);
+      color: #d9e4ef;
+      font-size: 10px;
+      font-weight: 850;
+    }
+    .activity-card h3 {
+      margin: 0;
+      font-size: 17px;
+      letter-spacing: -0.035em;
+    }
+    .activity-summary {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+    .activity-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .activity-detail {
+      padding: 9px;
+      border-radius: 13px;
+      background: rgba(0,0,0,.2);
+    }
+    .activity-detail b { display: block; font-size: 12px; }
+    .activity-detail span { display: block; margin-top: 3px; color: var(--muted); font-size: 10px; line-height: 1.35; }
+    .activity-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      margin-top: 13px;
+    }
+    .activity-reward { color: var(--amber); font-size: 11px; font-weight: 900; }
     .campus-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -1594,24 +1678,64 @@
     function activity() {
       screen.innerHTML = `
         <div class="topbar">
-          <div><div class="school-name">活动</div><div class="school-meta">官方活动 · 本校比赛 · 附近网吧</div></div>
-          <button class="cta" style="width:72px;height:38px;border-radius:14px" onclick="showToast('先锋身份可创建')">创建</button>
+          <div><div class="school-name">活动</div><div class="school-meta">已报名置顶 · 活动详情流</div></div>
+          <button class="cta" style="width:72px;height:38px;border-radius:14px" onclick="pioneerActivity()">创建</button>
         </div>
-        <section class="large-card">
-          <h2>比赛组织链路</h2>
-          <p>玩家看到报名、签到、赛程、结果和可获得积分。积分只投放在真实活动里，商城先在小程序内展示商品。</p>
-          <div class="template-list">
-            <div class="template-item"><strong>深大周末校内对抗赛</strong><span>报名中 · 完赛 +100 积分 · 冠军额外 +500</span></div>
-            <div class="template-item"><strong>华南片区高校挑战赛</strong><span>待审核 · 官方核心活动 · 审核通过后展示积分</span></div>
-            <div class="template-item"><strong>南山网吧高校夜赛</strong><span>预热中 · 签到 +40 积分 · 线下活动</span></div>
+        <section class="ongoing-pin">
+          <div class="section-head" style="margin-bottom:8px"><div class="section-title">已报名进行中</div><span class="link">固定展示</span></div>
+          <div class="ongoing-card">
+            <div><strong>深大周末校内对抗赛</strong><span>今晚 19:00 签到 · 五人组队 · 你所在队伍已报名</span></div>
+            <button class="mall-button" onclick="showToast('进入签到和赛程')">进入</button>
           </div>
         </section>
         <section class="section">
-          <div class="section-head"><div class="section-title">先锋工具箱</div><span class="link">身份解锁</span></div>
+          <div class="section-head"><div class="section-title">活动详情</div><button class="link" onclick="showToast('筛选本校、官方、附近')">筛选</button></div>
           <div class="radar-list">
-            <div class="activity"><div class="date-block">审<br>核</div><div><div class="activity-name">模板创建后提交官方审核</div><div class="activity-meta">核心活动和比赛必须审核，通过后才发布</div></div><span class="state-chip">必经</span></div>
-            <div class="activity"><div class="date-block">组<br>织</div><div><div class="activity-name">成功组织活动可获得积分</div><div class="activity-meta">按实际签到、完赛和活动质量结算</div></div><span class="state-chip">结算</span></div>
-            <div class="activity"><div class="date-block">AI<br>图</div><div><div class="activity-name">生成比赛宣传海报</div><div class="activity-meta">自动带入比赛信息和报名入口</div></div><span class="state-chip">生成</span></div>
+            <article class="activity-card">
+              <div class="activity-cover"></div>
+              <div class="activity-content">
+                <div class="activity-tags"><span class="activity-tag">本校比赛</span><span class="activity-tag">报名中</span><span class="activity-tag">需组队</span></div>
+                <h3>深大周末校内对抗赛</h3>
+                <div class="activity-summary">深圳大学瓦友社本周主活动，五人组队报名，适合想参加校内赛和冲积分的玩家。</div>
+                <div class="activity-detail-grid">
+                  <div class="activity-detail"><b>6 月 28 日 19:00</b><span>深圳大学活动中心</span></div>
+                  <div class="activity-detail"><b>32/64 人</b><span>报名截止今晚 22:00</span></div>
+                  <div class="activity-detail"><b>完赛 +100</b><span>冠军额外 +500 积分</span></div>
+                  <div class="activity-detail"><b>线下签到</b><span>需高校特权认证</span></div>
+                </div>
+                <div class="activity-actions"><span class="activity-reward">计入瓦友社成长值</span><button class="mall-button" onclick="showToast('已参与活动')">参与</button></div>
+              </div>
+            </article>
+            <article class="activity-card">
+              <div class="activity-cover"></div>
+              <div class="activity-content">
+                <div class="activity-tags"><span class="activity-tag">附近网吧</span><span class="activity-tag">预热中</span><span class="activity-tag">线下福利</span></div>
+                <h3>南山网吧高校夜赛</h3>
+                <div class="activity-summary">距你 2.4km 的合作网吧活动，现场签到后参与娱乐赛和抽奖。</div>
+                <div class="activity-detail-grid">
+                  <div class="activity-detail"><b>7 月 3 日 20:00</b><span>南山电竞馆</span></div>
+                  <div class="activity-detail"><b>18/48 人</b><span>单人报名，到场组队</span></div>
+                  <div class="activity-detail"><b>签到 +40</b><span>完赛 +80 积分</span></div>
+                  <div class="activity-detail"><b>现场领取</b><span>含网吧饮品券</span></div>
+                </div>
+                <div class="activity-actions"><span class="activity-reward">适合轻量参与</span><button class="mall-button" onclick="showToast('进入报名详情')">参与</button></div>
+              </div>
+            </article>
+            <article class="activity-card">
+              <div class="activity-cover"></div>
+              <div class="activity-content">
+                <div class="activity-tags"><span class="activity-tag">官方活动</span><span class="activity-tag">进行中</span><span class="activity-tag">全高校</span></div>
+                <h3>高校夏日挑战赛</h3>
+                <div class="activity-summary">官方发起的高校主题活动，不需要先锋审核，玩家可直接参与并查看阶段任务。</div>
+                <div class="activity-detail-grid">
+                  <div class="activity-detail"><b>本周开放</b><span>线上任务和阶段赛程</span></div>
+                  <div class="activity-detail"><b>全高校开放</b><span>认证用户均可参加</span></div>
+                  <div class="activity-detail"><b>任务积分</b><span>按阶段完成情况发放</span></div>
+                  <div class="activity-detail"><b>官方主办</b><span>无需高校先锋审核</span></div>
+                </div>
+                <div class="activity-actions"><span class="activity-reward">官方活动权益</span><button class="mall-button" onclick="showToast('参与官方活动')">参与</button></div>
+              </div>
+            </article>
           </div>
         </section>
       `;
